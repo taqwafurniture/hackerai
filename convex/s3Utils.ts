@@ -89,12 +89,13 @@ export function getS3Client(
   const secretAccessKey = getRequiredEnvVar("AWS_S3_SECRET_ACCESS_KEY");
   const region = location?.region ?? getLegacyS3StorageLocation().region;
 
+  // Cloudflare R2 / S3-compatible endpoint
+  const endpoint = process.env.S3_ENDPOINT?.trim();
+
   return new S3Client({
     region,
+    ...(endpoint ? { endpoint } : {}),
     ...(options.forcePathStyle ? { forcePathStyle: true } : {}),
-    // Presigned browser uploads do not provide the body while signing. The
-    // SDK's default WHEN_SUPPORTED behavior otherwise signs the CRC32 of an
-    // empty body, which S3 rejects when the browser PUTs the real file.
     requestChecksumCalculation: "WHEN_REQUIRED",
     credentials: {
       accessKeyId,
