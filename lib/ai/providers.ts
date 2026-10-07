@@ -1212,6 +1212,7 @@ export const GROK_4_5_SLUG = "x-ai/grok-4.5";
 export const GROK_4_6_SLUG = "x-ai/grok-4.6";
 // Preserve the internal vision route keys while upgrading the provider model.
 export const DEEPSEEK_V4_FLASH_VISION_SLUG = "deepseek/deepseek-v4.1-flash";
+export const OPENROUTER_FREE_SLUG = "openrouter/free";
 export const MINIMAX_M3_SLUG = "minimax/minimax-m3";
 // MiniMax is deliberately isolated to the final text-summary recovery. Normal
 // image turns route the original pixels through GLM Flash and then DeepSeek
@@ -1241,8 +1242,8 @@ const buildProviderMap = (
   or: OpenRouterInstance,
   // Preserve the DeepSeek alias used by paid daily free allowance rescue.
   // Regular free Ask uses ask-model-free-glm with low reasoning per request.
-  freeAskModelSlug = DEEPSEEK_V4_FLASH_SLUG,
-  freeAgentModelSlug = DEEPSEEK_V4_FLASH_VISION_SLUG,
+  freeAskModelSlug = OPENROUTER_FREE_SLUG,
+  freeAgentModelSlug = OPENROUTER_FREE_SLUG,
 ) =>
   ({
     "ask-model": or(GROK_4_6_SLUG),
