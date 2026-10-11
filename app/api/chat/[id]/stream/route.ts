@@ -128,7 +128,7 @@ export async function GET(
       } else {
         const abortController = new AbortController();
 
-        // Set up pre-emptive timeout before Vercel's hard 800s limit
+        // Set up pre-emptive timeout before Vercel Hobby's hard 300s limit
         const preemptiveTimeout = createPreemptiveTimeout({
           chatId,
           endpoint: "/api/chat/[id]/stream",

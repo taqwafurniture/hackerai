@@ -136,7 +136,7 @@ describe("createPreemptiveTimeout", () => {
       }),
     });
 
-    jest.advanceTimersByTime(359_999);
+    jest.advanceTimersByTime(229_999);
     expect(abortSpy).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(1);
@@ -154,9 +154,9 @@ describe("createPreemptiveTimeout", () => {
         requested_model_slug: "anthropic/claude-opus-4.6",
         provider_name: "Google Vertex",
         provider_attribution_available: true,
-        max_duration_seconds: 420,
+        max_duration_seconds: 290,
         safety_buffer_seconds: 60,
-        max_stream_time_ms: 360_000,
+        max_stream_time_ms: 230_000,
       }),
     );
     expect(mockPhInfo).toHaveBeenCalledWith(
@@ -187,7 +187,7 @@ describe("createPreemptiveTimeout", () => {
       },
     });
 
-    jest.advanceTimersByTime(360_000);
+    jest.advanceTimersByTime(230_000);
 
     expect(abortController.signal.aborted).toBe(true);
     expect(mockLoggerWarn).toHaveBeenCalledWith(
