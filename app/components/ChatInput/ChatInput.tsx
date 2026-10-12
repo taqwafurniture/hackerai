@@ -59,6 +59,7 @@ import { isFreeDesktopSandboxAvailable } from "@/lib/activation/free-desktop-san
 import { useSelectedComputerConnection } from "@/app/hooks/useSelectedComputerConnection";
 import { DisconnectedComputerNotice } from "./DisconnectedComputerNotice";
 import { openSettingsDialog } from "@/lib/utils/settings-dialog";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 
 interface ChatInputProps {
   onSubmit: (e: React.FormEvent) => void | boolean | Promise<void | boolean>;
@@ -669,6 +670,7 @@ const ChatInputContent = ({
   // 3. Force auto model selection
   const isFreeAgent =
     !!user &&
+    !PUBLIC_FREE_MODE_CLIENT &&
     !isCheckingProPlan &&
     subscription === "free" &&
     isAgentMode(chatMode) &&

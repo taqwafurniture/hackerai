@@ -75,6 +75,7 @@ interface UseChatHandlersProps {
     runId: string | undefined,
     requestGeneration: number | undefined,
   ) => void;
+  onNewChatSubmissionStart?: () => void;
   onStopCallback?: () => void;
   resetAutoContinueCount?: () => void;
 }
@@ -116,6 +117,7 @@ export const useChatHandlers = ({
   prepareAgentRecovery,
   getAgentRunRequestGeneration,
   onAgentRunAlreadyFinished,
+  onNewChatSubmissionStart,
   onStopCallback,
   resetAutoContinueCount,
   sendDisabledReason,
@@ -631,6 +633,7 @@ export const useChatHandlers = ({
     }
     if (sendDisabledReasonRef.current) return false;
     if (!isExistingChat) {
+      onNewChatSubmissionStart?.();
       window.history.replaceState({}, "", `/c/${chatId}`);
     }
 

@@ -696,7 +696,10 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
   const subscriptionRef = useLatestRef(subscription);
 
   // Suppress transient "Chat Not Found" while server creates the chat
-  const [awaitingServerChat, setAwaitingServerChat] = useState<boolean>(false);
+  const [awaitingServerChat, setAwaitingServerChat] =
+    useState<boolean>(false);
+  const newChatSubmissionPendingRef = useRef(false);
+  const awaitingServerChatRef = useLatestRef(awaitingServerChat);
 
   // Store streamed file metadata separately from AI SDK message state.
   const [tempChatFileDetails, setTempChatFileDetails] = useState<
@@ -761,6 +764,13 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
 
   const chatDataForCurrentChat =
     chatData && (chatData as any).id === chatId ? chatData : undefined;
+
+  useEffect(() => {
+    if (!awaitingServerChat || !chatDataForCurrentChat) return;
+
+    newChatSubmissionPendingRef.current = false;
+    setAwaitingServerChat(false);
+  }, [awaitingServerChat, chatDataForCurrentChat]);
   const [chatTitle, setStreamedTitle] = useStreamedChatTitle(
     chatDataForCurrentChat?.title,
   );
@@ -779,6 +789,8 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
       resetSandboxPreference();
       setChatId(uuidv4());
       setIsExistingChat(false);
+      newChatSubmissionPendingRef.current = false;
+      setAwaitingServerChat(false);
       wasNewChatRef.current = true;
     }
   }, [routeChatId, setStreamedTitle, resetSandboxPreference]);
@@ -1233,18 +1245,22 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
       agentLongRunCorrelationRef.current = null;
       agentLongRunFallbackAllowedRef.current = false;
       setIsAutoResuming(false);
-      setAwaitingServerChat(false);
       dispatchStreaming({ type: "RESET_ON_FINISH" });
 
-      if (
-        finalizeNewChatRoute({
-          chatId,
-          isAbort,
-          isExistingChat: isExistingChatRef.current,
-        })
-      ) {
+      const wasPendingNewChat = newChatSubmissionPendingRef.current;
+
+      finalizeNewChatRoute({
+        chatId,
+        isAbort,
+        isExistingChat: isExistingChatRef.current,
+      });
+
+      if (wasPendingNewChat) {
         removeDraft("new");
+        setAwaitingServerChat(true);
         setIsExistingChat(true);
+      } else {
+        setAwaitingServerChat(false);
       }
     },
     onError: (error) => {
@@ -1255,7 +1271,22 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
       agentLongRunCorrelationRef.current = null;
       agentLongRunFallbackAllowedRef.current = false;
       setIsAutoResuming(false);
+
+      const failedNewChat =
+        newChatSubmissionPendingRef.current ||
+        awaitingServerChatRef.current;
+
+      newChatSubmissionPendingRef.current = false;
       setAwaitingServerChat(false);
+
+      if (
+        failedNewChat &&
+        window.location.pathname === `/c/${chatId}`
+      ) {
+        window.history.replaceState({}, "", "/");
+        setIsExistingChat(false);
+      }
+
       dispatchStreaming({ type: "RESET_ON_FINISH" });
       const structuredStreamError = deserializeChatSDKErrorFromStream(error);
       const displayError = structuredStreamError ?? error;
@@ -1615,18 +1646,22 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
       setAgentLongRunId(null);
       stopRef.current();
       setIsAutoResuming(false);
-      setAwaitingServerChat(false);
       dispatchStreaming({ type: "RESET_ON_FINISH" });
 
-      if (
-        finalizeNewChatRoute({
-          chatId,
-          isAbort: false,
-          isExistingChat: isExistingChatRef.current,
-        })
-      ) {
+      const wasPendingNewChat = newChatSubmissionPendingRef.current;
+
+      finalizeNewChatRoute({
+        chatId,
+        isAbort: false,
+        isExistingChat: isExistingChatRef.current,
+      });
+
+      if (wasPendingNewChat) {
         removeDraft("new");
+        setAwaitingServerChat(true);
         setIsExistingChat(true);
+      } else {
+        setAwaitingServerChat(false);
       }
     };
 
@@ -2196,6 +2231,10 @@ const ChatContent = ({ autoResume }: { autoResume: boolean }) => {
     setMessages,
     isExistingChat,
     status,
+    onNewChatSubmissionStart: () => {
+      newChatSubmissionPendingRef.current = true;
+      setAwaitingServerChat(true);
+    },
     isSendingNowRef,
     hasManuallyStoppedRef,
     activeTriggerRunRef: cancellationTriggerRunRef,

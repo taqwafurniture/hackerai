@@ -14,6 +14,9 @@ const mockCaptureAuthenticatedEvent = jest.fn();
 const mockCaptureUpgradeCtaImpression = jest.fn();
 const mockCaptureComputerActivationImpression = jest.fn();
 const mockRedirectToPricing = jest.fn();
+const mockSetChatMode = jest.fn();
+const mockSetSandboxPreference = jest.fn();
+const mockSetSelectedModel = jest.fn();
 let mockIsTauri = false;
 let mockDetectedPlatform = {
   platform: "macos",
@@ -32,6 +35,14 @@ jest.mock("@/lib/analytics/client", () => ({
 
 jest.mock("@/app/hooks/usePricingDialog", () => ({
   redirectToPricing: (...args: unknown[]) => mockRedirectToPricing(...args),
+}));
+
+jest.mock("@/app/contexts/GlobalState", () => ({
+  useGlobalState: () => ({
+    setChatMode: mockSetChatMode,
+    setSandboxPreference: mockSetSandboxPreference,
+    setSelectedModel: mockSetSelectedModel,
+  }),
 }));
 
 jest.mock("@/app/hooks/useTauri", () => ({
@@ -58,6 +69,9 @@ describe("FreeAskComputerActivation", () => {
     mockCaptureComputerActivationImpression.mockReset().mockReturnValue(true);
     mockCaptureUpgradeCtaImpression.mockClear();
     mockRedirectToPricing.mockClear();
+    mockSetChatMode.mockClear();
+    mockSetSandboxPreference.mockClear();
+    mockSetSelectedModel.mockClear();
   });
 
   afterEach(() => jest.useRealTimers());

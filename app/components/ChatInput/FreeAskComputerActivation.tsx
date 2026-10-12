@@ -16,6 +16,8 @@ import {
   captureComputerActivationImpression,
   captureUpgradeCtaImpression,
 } from "@/lib/analytics/client";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
+import { useGlobalState } from "@/app/contexts/GlobalState";
 
 const ANALYTICS_SURFACE = "chat_input_computer_activation";
 const ANALYTICS_SOURCE = "free_ask_computer_activation";
@@ -26,6 +28,11 @@ export function FreeAskComputerActivation() {
   const capturedUpgradeImpressionRef = useRef(false);
   const detectedPlatform = useDetectedPlatform();
   const { isTauri } = useTauri();
+  const {
+    setChatMode,
+    setSandboxPreference,
+    setSelectedModel,
+  } = useGlobalState();
 
   useEffect(() => {
     if (isTauri || capturedImpressionRef.current) return;
@@ -51,7 +58,12 @@ export function FreeAskComputerActivation() {
   }, [isTauri]);
 
   useEffect(() => {
-    if (!open || capturedUpgradeImpressionRef.current) return;
+    if (
+      PUBLIC_FREE_MODE_CLIENT ||
+      !open ||
+      capturedUpgradeImpressionRef.current
+    )
+      return;
 
     capturedUpgradeImpressionRef.current = true;
     captureUpgradeCtaImpression({
@@ -94,6 +106,21 @@ export function FreeAskComputerActivation() {
 
   const handleCloudUpgrade = () => {
     setOpen(false);
+
+    if (PUBLIC_FREE_MODE_CLIENT) {
+      setChatMode("agent");
+      setSandboxPreference("e2b", { remember: false });
+      setSelectedModel("auto");
+
+      captureAuthenticatedEvent("computer_activation_cloud_selected", {
+        surface: ANALYTICS_SURFACE,
+        source: ANALYTICS_SOURCE,
+        subscription_tier: "free",
+        chat_mode: "agent",
+      });
+      return;
+    }
+
     redirectToPricing({
       surface: ANALYTICS_SURFACE,
       source: ANALYTICS_SOURCE,
@@ -184,7 +211,9 @@ export function FreeAskComputerActivation() {
             onClick={handleCloudUpgrade}
             data-testid="free-ask-cloud-upgrade"
           >
-            Upgrade for Cloud Agent
+            {PUBLIC_FREE_MODE_CLIENT
+              ? "Use Cloud Agent"
+              : "Upgrade for Cloud Agent"}
           </Button>
         </div>
       </PopoverContent>
