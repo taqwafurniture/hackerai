@@ -1,4 +1,5 @@
 import { selectModel } from "@/lib/chat/chat-processor";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import { assertFreeAgentGates } from "@/lib/api/chat-stream-helpers";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { checkFreeMonthlyCostLimit } from "@/lib/rate-limit/free-monthly-cost";
@@ -25,6 +26,16 @@ describe("PUBLIC_FREE_MODE", () => {
     } else {
       process.env.PUBLIC_FREE_MODE = original;
     }
+  });
+
+  it("defaults public-free mode ON when the server env is missing", () => {
+    delete process.env.PUBLIC_FREE_MODE;
+    expect(isPublicFreeMode()).toBe(true);
+  });
+
+  it("can still be explicitly disabled", () => {
+    process.env.PUBLIC_FREE_MODE = "false";
+    expect(isPublicFreeMode()).toBe(false);
   });
 
   it("routes free Ask and Agent through the OpenRouter free aliases", () => {
