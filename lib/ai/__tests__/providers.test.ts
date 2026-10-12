@@ -125,7 +125,7 @@ describe("provider registry", () => {
     expect(
       (myProvider.languageModel("ask-model-free") as { modelId: string })
         .modelId,
-    ).toBe("deepseek/deepseek-v4-flash-0731");
+    ).toBe("openrouter/free");
     expect(
       (myProvider.languageModel("ask-model-free-glm") as { modelId: string })
         .modelId,
@@ -147,14 +147,14 @@ describe("provider registry", () => {
     expect(
       (myProvider.languageModel("agent-model-free") as { modelId: string })
         .modelId,
-    ).toBe("deepseek/deepseek-v4.1-flash");
+    ).toBe("openrouter/free");
     expect(
       (
         myProvider.languageModel("auxiliary-vision-model") as {
           modelId: string;
         }
       ).modelId,
-    ).toBe("minimax/minimax-m3");
+    ).toBe("openrouter/free");
     expect(AUXILIARY_VISION_SLUG).toBe("minimax/minimax-m3");
     expect(GLM_5_3_FLASH_SLUG).toBe("z-ai/glm-5.3-flash");
     expect(DEEPSEEK_V4_FLASH_VISION_SLUG).toBe("deepseek/deepseek-v4.1-flash");
@@ -233,15 +233,15 @@ describe("provider registry", () => {
     expect(
       (myProvider.languageModel("fallback-agent-model") as { modelId: string })
         .modelId,
-    ).toBe("x-ai/grok-4.6");
+    ).toBe("openrouter/free");
     expect(
       (myProvider.languageModel("fallback-ask-model") as { modelId: string })
         .modelId,
-    ).toBe("x-ai/grok-4.6");
+    ).toBe("openrouter/free");
     expect(
       (myProvider.languageModel("title-generator-model") as { modelId: string })
         .modelId,
-    ).toBe("z-ai/glm-5.3-flash");
+    ).toBe("openrouter/free");
     expect(getModelCutoffDate("ask-model-free")).toBeUndefined();
     expect(getModelCutoffDate("agent-model-free")).toBeUndefined();
     expect(getModelDisplayName("model-grok-4.6")).toBe("xAI Grok 4.6");
@@ -304,11 +304,11 @@ describe("provider registry", () => {
     ).toBe("z-ai/glm-5.3-flash");
     expect(
       (provider.languageModel("ask-model-free") as { modelId: string }).modelId,
-    ).toBe("deepseek/deepseek-v4-flash-0731");
+    ).toBe("openrouter/free");
     expect(
       (provider.languageModel("agent-model-free") as { modelId: string })
         .modelId,
-    ).toBe("deepseek/deepseek-v4.1-flash");
+    ).toBe("openrouter/free");
   });
 
   it.each([
