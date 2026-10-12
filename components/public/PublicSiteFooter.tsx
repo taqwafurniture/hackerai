@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
 import { HackerAISVG } from "@/components/icons/hackerai-svg";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 import { GITHUB_URL, HELP_CENTER_URL, STATUS_PAGE_URL } from "@/lib/seo/site";
 
 type FooterLink = { href: string; label: string; external?: boolean };
@@ -66,7 +67,7 @@ export function PublicSiteFooter() {
                   .filter(
                     (link) =>
                       !(
-                        process.env.NEXT_PUBLIC_PUBLIC_FREE_MODE === "true" &&
+                        PUBLIC_FREE_MODE_CLIENT &&
                         link.href === "/pricing"
                       ),
                   )

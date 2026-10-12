@@ -15,6 +15,7 @@ import {
   canonicalMetadata,
 } from "@/lib/seo/site";
 import { PricingPlans } from "./PricingPlans";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 
 const description =
   "Compare current HackerAI Free, Pro, Pro+, Ultra, and Team pricing for AI-assisted penetration testing, local Agent mode, files, and cloud agents.";
@@ -42,7 +43,7 @@ const externalLinkClassName =
   "inline-flex items-center gap-2 rounded-sm text-sm font-medium text-foreground underline underline-offset-4 hover:text-foreground/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
 
 export default function PricingPage() {
-  if (process.env.NEXT_PUBLIC_PUBLIC_FREE_MODE === "true") {
+  if (PUBLIC_FREE_MODE_CLIENT) {
     return (
       <div className="min-h-dvh bg-background text-foreground">
         <Header />
