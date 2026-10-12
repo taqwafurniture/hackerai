@@ -1,4 +1,5 @@
 import { isAbliterationModel } from "@/lib/ai/abliteration";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import {
   enforceRegionalSubscriptionFirst,
   subscriptionFirstCountryFromRequest,
@@ -464,7 +465,7 @@ export const createChatHandler = () => {
         }),
       ]);
       const truncatedMessages =
-        subscription === "free"
+        subscription === "free" && !isPublicFreeMode()
           ? stripImageAttachments(fetched.truncatedMessages)
           : fetched.truncatedMessages;
 

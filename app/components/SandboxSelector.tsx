@@ -23,6 +23,7 @@ import { useTauri } from "@/app/hooks/useTauri";
 import { detectPlatform } from "@/app/download/DownloadSection";
 import { useGlobalState } from "@/app/contexts/GlobalState";
 import { useInitialConnectionPending } from "@/app/hooks/useInitialConnectionPending";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 
 import type { SetSandboxPreference } from "@/app/hooks/useSandboxPreference";
 import {
@@ -66,6 +67,7 @@ export function SandboxSelector({
     desktopEnvironmentId,
   } = useGlobalState();
   const isFreeUser = subscription === "free";
+  const isCloudLocked = isFreeUser && !PUBLIC_FREE_MODE_CLIENT;
 
   const selectedConnectionKnown = Boolean(
     connections?.some((connection) =>
@@ -359,7 +361,7 @@ export function SandboxSelector({
           <button
             key={cloudOption.id}
             onClick={() => {
-              if (isFreeUser) {
+              if (isCloudLocked) {
                 toast.info("Cloud sandbox requires a Pro plan", {
                   description:
                     "Use this computer or connect another computer for free, or upgrade to Pro for cloud access.",
@@ -370,7 +372,7 @@ export function SandboxSelector({
               setOpen(false);
             }}
             className={`w-full flex items-center gap-2.5 p-2 rounded-md text-left transition-colors ${
-              isFreeUser
+              isCloudLocked
                 ? "opacity-60 cursor-not-allowed"
                 : value === cloudOption.id
                   ? "bg-accent text-accent-foreground"
@@ -383,7 +385,7 @@ export function SandboxSelector({
                 {cloudOption.label}
               </div>
             </div>
-            {isFreeUser ? (
+            {isCloudLocked ? (
               <span className="text-[10px] font-semibold bg-primary/10 text-primary px-1.5 py-0.5 rounded">
                 Pro
               </span>

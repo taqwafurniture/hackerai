@@ -32,6 +32,7 @@ import {
   writeGeneratedTextAttachment,
 } from "./useTauri";
 import { PASTED_TEXT_ATTACHMENT_MIN_CHARS } from "@/lib/utils/pasted-text-attachments";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 import { getPreferredFileStorageRegion } from "@/lib/storage/file-storage-region";
 
 import {
@@ -778,7 +779,7 @@ export const useFileUpload = (mode: ChatMode = "ask") => {
 
   const processLocalDesktopPaths = useCallback(
     async (paths: string[]) => {
-      if (subscription === "free") {
+      if (subscription === "free" && !PUBLIC_FREE_MODE_CLIENT) {
         toast.error("Upgrade plan to upload files.");
         return;
       }
@@ -910,7 +911,7 @@ export const useFileUpload = (mode: ChatMode = "ask") => {
       } = {},
     ): Promise<boolean> => {
       // Check if user has pro plan for file uploads
-      if (subscription === "free") {
+      if (subscription === "free" && !PUBLIC_FREE_MODE_CLIENT) {
         toast.error("Upgrade plan to upload files.");
         return false;
       }

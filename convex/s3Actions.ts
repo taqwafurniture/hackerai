@@ -13,6 +13,7 @@ import { convexLogger } from "./lib/logger";
 import { checkFileUploadRateLimit } from "./fileActions";
 import { validateUploadPolicy } from "../lib/utils/upload-policy";
 import { hasPaidEntitlement } from "../lib/auth/entitlements";
+import { isPublicFreeMode } from "../lib/config/public-free-mode";
 
 type StorageUsage = {
   usedBytes: number;
@@ -175,7 +176,7 @@ export const generateS3UploadUrlAction = action({
     const userId = identity.subject;
     const entitlements = getIdentityEntitlements(identity);
 
-    if (!hasPaidEntitlement(entitlements)) {
+    if (!isPublicFreeMode() && !hasPaidEntitlement(entitlements)) {
       throw new ConvexError({
         code: "PAID_PLAN_REQUIRED",
         message: "Paid plan required for file uploads",

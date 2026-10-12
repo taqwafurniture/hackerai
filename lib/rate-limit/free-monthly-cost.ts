@@ -1,4 +1,5 @@
 import { ChatSDKError } from "@/lib/errors";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import {
   type FreeLimitPolicy,
   getFreeMonthlyCostLimitDollars,
@@ -69,6 +70,19 @@ export async function checkFreeMonthlyCostLimit(
   quotaSubject: string,
   freeLimits?: FreeLimitPolicy,
 ): Promise<FreeMonthlyCostSnapshot> {
+  if (isPublicFreeMode()) {
+    return {
+      monthlyLimitPoints: Number.MAX_SAFE_INTEGER,
+      monthlyRemainingAtStart: Number.MAX_SAFE_INTEGER,
+      monthlyResetTime: new Date("2100-01-01T00:00:00.000Z"),
+      extraUsageEnabledAtStart: false,
+      extraUsageHasBalanceAtStart: false,
+      extraUsageBalanceAtStart: 0,
+      extraUsageAutoReload: false,
+      rateLimitSkipped: true,
+    };
+  }
+
   const limitPoints = dollarsToPoints(
     getFreeMonthlyCostLimitDollars(freeLimits),
   );
@@ -127,6 +141,8 @@ export async function recordFreeMonthlyCost(
   userId: string,
   costDollars: number,
 ): Promise<void> {
+  if (isPublicFreeMode()) return;
+
   const costPoints = dollarsToPoints(costDollars);
   if (costPoints <= 0) return;
 

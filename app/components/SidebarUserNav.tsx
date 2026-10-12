@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useGlobalState } from "@/app/contexts/GlobalState";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 import { redirectToPricing } from "../hooks/usePricingDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIsStandalone } from "@/hooks/use-is-standalone";
@@ -72,7 +73,7 @@ const UpgradeBanner = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const isProUser = subscription !== "free";
 
   // Don't show for pro users or while checking
-  if (isCheckingProPlan || isProUser) {
+  if (PUBLIC_FREE_MODE_CLIENT || isCheckingProPlan || isProUser) {
     return null;
   }
 
@@ -154,7 +155,8 @@ const SidebarUserNav = ({ isCollapsed = false }: { isCollapsed?: boolean }) => {
   const [usageFetchFailed, setUsageFetchFailed] = useState(false);
   const isMobile = useIsMobile();
   const isStandalone = useIsStandalone();
-  const isPaidUser = subscription !== "free";
+  const isPaidUser =
+    subscription !== "free" && !PUBLIC_FREE_MODE_CLIENT;
 
   const getAgentRateLimitStatus = useAction(
     api.rateLimitStatus.getAgentRateLimitStatus,
@@ -363,8 +365,10 @@ const SidebarUserNav = ({ isCollapsed = false }: { isCollapsed?: boolean }) => {
                   data-testid="subscription-badge"
                   className="text-xs text-sidebar-accent-foreground truncate"
                 >
-                  {subscription === "ultra"
-                    ? "Ultra"
+                  {PUBLIC_FREE_MODE_CLIENT
+                    ? "Free"
+                    : subscription === "ultra"
+                      ? "Ultra"
                     : subscription === "team"
                       ? "Team"
                       : subscription === "pro-plus"
@@ -398,7 +402,8 @@ const SidebarUserNav = ({ isCollapsed = false }: { isCollapsed?: boolean }) => {
 
           <DropdownMenuSeparator />
 
-          {(subscription === "pro" || subscription === "pro-plus") && (
+          {!PUBLIC_FREE_MODE_CLIENT &&
+            (subscription === "pro" || subscription === "pro-plus") && (
             <DropdownMenuItem
               data-testid="upgrade-menu-item"
               onClick={() =>

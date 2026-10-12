@@ -12,9 +12,13 @@ import { isSupportedImageMediaType } from "../lib/utils/file-utils";
 import { fileCountAggregate } from "./fileAggregate";
 import { convexLogger } from "./lib/logger";
 import { scheduleFileDeletion } from "./lib/fileDeletion";
+import { isPublicFreeMode } from "../lib/config/public-free-mode";
 
-// Maximum storage per user: 10 GB
-const MAX_STORAGE_BYTES = 10 * 1024 * 1024 * 1024; // 10737418240 bytes
+// Public-free mode relies on the storage provider/account quota instead of
+// an application-level 10 GB per-user cap.
+const MAX_STORAGE_BYTES = isPublicFreeMode()
+  ? Number.MAX_SAFE_INTEGER
+  : 10 * 1024 * 1024 * 1024;
 const MAX_AUXILIARY_VISION_DESCRIPTION_CHARS = 12_000;
 
 /** Cache an owned image description so later turns do not rebill vision. */

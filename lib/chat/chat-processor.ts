@@ -1,4 +1,5 @@
 import { getModerationResult } from "@/lib/moderation";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import { evaluatePaidFirstStepVariant } from "@/lib/experiments/abliterated-model";
 import type { PostHog } from "posthog-node";
 import {
@@ -60,6 +61,11 @@ export function selectModel(
   } = {},
 ): ModelName {
   const isAgent = isAgentMode(mode);
+
+  if (subscription === "free" && isPublicFreeMode()) {
+    return isAgent ? "agent-model-free" : "ask-model-free";
+  }
+
   const allowedSelectedModel = normalizeMaxModelForSubscription(
     selectedModel,
     subscription,

@@ -11,6 +11,7 @@ import { useGlobalState } from "../contexts/GlobalState";
 import { useEffect, useRef, useState } from "react";
 import { redirectToPricing } from "../hooks/usePricingDialog";
 import { captureUpgradeCtaImpression } from "@/lib/analytics/client";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 
 interface AttachmentButtonProps {
   onAttachClick: () => void;
@@ -38,7 +39,7 @@ export const AttachmentButton = ({
   }, [popoverOpen, subscription]);
 
   const handleClick = () => {
-    if (subscription !== "free") {
+    if (PUBLIC_FREE_MODE_CLIENT || subscription !== "free") {
       onAttachClick();
     } else {
       setPopoverOpen(true);
@@ -58,7 +59,11 @@ export const AttachmentButton = ({
   };
 
   // If user has pro plan or we're checking, show normal tooltip behavior
-  if (subscription !== "free" || isCheckingProPlan) {
+  if (
+    PUBLIC_FREE_MODE_CLIENT ||
+    subscription !== "free" ||
+    isCheckingProPlan
+  ) {
     return (
       <TooltipPrimitive.Root>
         <TooltipTrigger asChild>

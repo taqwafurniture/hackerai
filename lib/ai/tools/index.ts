@@ -1,4 +1,5 @@
 import { DefaultSandboxManager } from "./utils/sandbox-manager";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import {
   HybridSandboxManager,
   type SandboxPreference,
@@ -202,7 +203,11 @@ export const createTools = (
   };
 
   // Cloud protection: free agent users must use a user-owned execution host.
-  if (subscription === "free" && isAgentMode(mode)) {
+  if (
+    subscription === "free" &&
+    isAgentMode(mode) &&
+    !isPublicFreeMode()
+  ) {
     if (!sandboxPreference || sandboxPreference === "e2b") {
       throw new Error(
         "Free agent mode requires a local sandbox. Cloud sandboxes are not available on the free plan.",

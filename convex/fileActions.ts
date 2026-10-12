@@ -56,6 +56,7 @@ import {
   hasPaidEntitlement,
   parseEntitlements,
 } from "../lib/auth/entitlements";
+import { isPublicFreeMode } from "../lib/config/public-free-mode";
 
 const FILE_UPLOAD_WINDOW = "5 h";
 
@@ -141,6 +142,8 @@ export const checkFileUploadRateLimit = async (
   consume: boolean = true,
   options: { entitlements?: Array<string> } = {},
 ): Promise<RateLimitResult | null> => {
+  if (isPublicFreeMode()) return null;
+
   // Check if Redis is configured
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -732,7 +735,7 @@ export const saveFile = action({
       args.skipTokenValidation || isAgentUploadMode;
 
     // Check if paid tier (free tier cannot upload)
-    if (!hasPaidEntitlement(entitlements)) {
+    if (!isPublicFreeMode() && !hasPaidEntitlement(entitlements)) {
       throw new ConvexError({
         code: "PAID_PLAN_REQUIRED",
         message: "Paid plan required for file uploads",

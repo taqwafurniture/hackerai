@@ -42,6 +42,34 @@ const externalLinkClassName =
   "inline-flex items-center gap-2 rounded-sm text-sm font-medium text-foreground underline underline-offset-4 hover:text-foreground/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
 
 export default function PricingPage() {
+  if (process.env.NEXT_PUBLIC_PUBLIC_FREE_MODE === "true") {
+    return (
+      <div className="min-h-dvh bg-background text-foreground">
+        <Header />
+        <main>
+          <section className="border-b border-border/80">
+            <div className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
+              <p className="text-sm font-medium text-muted-foreground">
+                Public access
+              </p>
+              <h1 className="mt-3 text-5xl font-medium tracking-tight">
+                Free access is enabled
+              </h1>
+              <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
+                This deployment is configured for public free access. Sign in
+                to use HackerAI, cloud Agent mode, and file attachments.
+              </p>
+              <Button asChild className="mt-8">
+                <Link href="/">Open HackerAI</Link>
+              </Button>
+            </div>
+          </section>
+        </main>
+        <PublicSiteFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <JsonLd data={SOFTWARE_APPLICATION_JSON_LD} />

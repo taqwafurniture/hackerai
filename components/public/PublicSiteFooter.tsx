@@ -62,7 +62,15 @@ export function PublicSiteFooter() {
                 {column.title}
               </h2>
               <ul className="mt-4 space-y-3">
-                {column.links.map((link) => (
+                {column.links
+                  .filter(
+                    (link) =>
+                      !(
+                        process.env.NEXT_PUBLIC_PUBLIC_FREE_MODE === "true" &&
+                        link.href === "/pricing"
+                      ),
+                  )
+                  .map((link) => (
                   <li key={link.href}>
                     {link.external ? (
                       <a

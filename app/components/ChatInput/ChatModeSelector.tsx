@@ -7,6 +7,7 @@ import { useGlobalState } from "@/app/contexts/GlobalState";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { AgentUpgradeDialog } from "./AgentUpgradeDialog";
 import { navigateToAuth, useTauri } from "@/app/hooks/useTauri";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 
 export interface ChatModeSelectorProps {
   className?: string;
@@ -49,6 +50,15 @@ export function ChatModeSelector({ className }: ChatModeSelectorProps) {
       navigateToAuth("/signup", { preferSignInForReturningUser: true });
       return;
     }
+    if (PUBLIC_FREE_MODE_CLIENT) {
+      setChatMode("agent");
+      setSandboxPreference("e2b", { remember: false });
+      if (selectedModel !== "auto") {
+        setSelectedModel("auto");
+      }
+      return;
+    }
+
     if (subscription !== "free") {
       setChatMode("agent");
     } else if (hasLocalSandbox) {

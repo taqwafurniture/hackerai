@@ -4,6 +4,7 @@ import {
   type SubscriptionErrorContext,
 } from "centrifuge";
 import { trackPresenceTraffic } from "@/lib/centrifugo/presence-traffic";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import type {
   AnySandbox,
   SandboxBootInfo,
@@ -751,7 +752,7 @@ export class HybridSandboxManager implements SandboxManager {
 
     // If preference is E2B, always use E2B (but block for free users)
     if (this.sandboxPreference === "e2b") {
-      if (this.subscription === "free") {
+      if (this.subscription === "free" && !isPublicFreeMode()) {
         throw new Error("Cloud sandbox requires a paid plan.");
       }
       return this.getCloudSandbox();
@@ -802,7 +803,7 @@ export class HybridSandboxManager implements SandboxManager {
     }
 
     // Free users cannot fall back to E2B — must use local sandbox
-    if (this.subscription === "free") {
+    if (this.subscription === "free" && !isPublicFreeMode()) {
       throw new Error(
         "Local sandbox disconnected. Reconnect your desktop app or upgrade to Pro for cloud sandbox.",
       );

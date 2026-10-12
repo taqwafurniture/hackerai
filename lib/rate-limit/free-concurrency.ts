@@ -1,4 +1,5 @@
 import { ChatSDKError } from "@/lib/errors";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import { getLimitPressureContext } from "@/lib/limit-pressure";
 import { FREE_RUN_LOCK_TTL_SECONDS } from "./free-config";
 import { createRedisClient } from "./redis";
@@ -25,6 +26,13 @@ export async function acquireFreeRunConcurrencyLock(
   userId: string,
   ttlSeconds = FREE_RUN_LOCK_TTL_SECONDS,
 ): Promise<FreeRunConcurrencyLock> {
+  if (isPublicFreeMode()) {
+    return {
+      rateLimitSkipped: true,
+      release: async () => {},
+    };
+  }
+
   const redis = createRedisClient();
 
   if (!redis) {

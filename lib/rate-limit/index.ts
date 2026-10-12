@@ -1,4 +1,5 @@
 import type { FreeLimitPolicy } from "./free-config";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 /**
  * Rate Limiting Module
  *
@@ -119,6 +120,13 @@ import {
   checkFreeAgentRateLimitCapacity,
 } from "./sliding-window";
 
+const unlimitedPublicFreeRateLimit = (): RateLimitInfo => ({
+  remaining: Number.MAX_SAFE_INTEGER,
+  limit: Number.MAX_SAFE_INTEGER,
+  resetTime: new Date("2100-01-01T00:00:00.000Z"),
+  rateLimitSkipped: true,
+});
+
 /**
  * Check rate limit for a user.
  *
@@ -145,6 +153,10 @@ export const checkRateLimit = async (
   freeQuotaSubject?: string,
   freeLimits?: FreeLimitPolicy,
 ): Promise<RateLimitInfo> => {
+  if (subscription === "free" && isPublicFreeMode()) {
+    return unlimitedPublicFreeRateLimit();
+  }
+
   // Free users: fixed daily window
   if (subscription === "free") {
     const quotaSubject = freeQuotaSubject ?? userId;
@@ -180,6 +192,10 @@ export const checkRateLimitCapacity = async (
   freeQuotaSubject?: string,
   freeLimits?: FreeLimitPolicy,
 ): Promise<RateLimitInfo> => {
+  if (subscription === "free" && isPublicFreeMode()) {
+    return unlimitedPublicFreeRateLimit();
+  }
+
   if (subscription === "free") {
     const quotaSubject = freeQuotaSubject ?? userId;
     return isAgentMode(mode)

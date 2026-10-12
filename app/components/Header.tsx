@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { navigateToAuth } from "@/app/hooks/useTauri";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 import {
   CreditCard,
   Download,
@@ -102,7 +103,11 @@ const Header: React.FC<HeaderProps> = ({ chatTitle, currentPath }) => {
           {!chatTitle && (
             <nav className="flex items-center gap-1" aria-label="Primary">
               {publicNavigation.map((item) => {
-                if (item.href === "/download") return null;
+                if (
+                  item.href === "/download" ||
+                  (PUBLIC_FREE_MODE_CLIENT && item.href === "/pricing")
+                )
+                  return null;
                 const isCurrent = item.href === currentPath;
                 return (
                   <Button
@@ -245,6 +250,8 @@ const Header: React.FC<HeaderProps> = ({ chatTitle, currentPath }) => {
             <p className="text-xl font-semibold">Explore</p>
             <ul className="mt-3">
               {publicNavigation.map((item) => {
+                if (PUBLIC_FREE_MODE_CLIENT && item.href === "/pricing")
+                  return null;
                 const isCurrent = item.href === currentPath;
                 const Icon = item.icon;
                 return (

@@ -59,6 +59,7 @@ import { generateNotesSection } from "@/lib/system-prompt/notes";
 import { logger } from "@/lib/logger";
 import { UsageTracker } from "@/lib/usage-tracker";
 import { ChatSDKError } from "@/lib/errors";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import type { LimitCapReason } from "@/lib/limit-pressure";
 import {
   getExtraUsageBalance,
@@ -763,6 +764,12 @@ const getFallbackKeys = (
   modelName?: string,
 ): readonly ModelName[] | undefined => {
   if (!modelName) return undefined;
+  if (
+    isPublicFreeMode() &&
+    (modelName === "ask-model-free" || modelName === "agent-model-free")
+  ) {
+    return undefined;
+  }
   return MODEL_FALLBACK_CHAIN[modelName as ModelName];
 };
 
@@ -771,6 +778,13 @@ export function getRetryFallbackModel(
   modelName: ModelName,
   _mode: ChatMode,
 ): ModelName {
+  if (
+    isPublicFreeMode() &&
+    (modelName === "ask-model-free" || modelName === "agent-model-free")
+  ) {
+    return modelName;
+  }
+
   if (modelName === ABLITERATION_LARGE_V2_MODEL_KEY) {
     return "model-deepseek-v4-pro-0813";
   }
@@ -1463,6 +1477,7 @@ export function assertFreeAgentGates(args: {
   sandboxPreference: SandboxPreference | undefined;
 }): void {
   const { mode, subscription, sandboxPreference } = args;
+  if (subscription === "free" && isPublicFreeMode()) return;
   if (!isAgentMode(mode) || subscription !== "free") return;
 
   const isLocalSandbox = sandboxPreference && sandboxPreference !== "e2b";

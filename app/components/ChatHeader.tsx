@@ -18,6 +18,7 @@ import { ShareDialog } from "./ShareDialog";
 import { navigateToAuth } from "@/app/hooks/useTauri";
 import { captureUpgradeCtaImpression } from "@/lib/analytics/client";
 import { formatTaskTitle } from "@/app/utils/task-ui-copy";
+import { PUBLIC_FREE_MODE_CLIENT } from "@/lib/config/public-free-mode-client";
 
 interface ChatHeaderProps {
   hasMessages: boolean;
@@ -73,7 +74,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   const isBranchedChat = !!chatData?.branched_from_chat_id;
   const showEmptyStateHeader = !hasMessages && !hasActiveChat;
   const showUpgradeCta = Boolean(
-    !loading && user && !isCheckingProPlan && subscription === "free",
+    !PUBLIC_FREE_MODE_CLIENT &&
+      !loading &&
+      user &&
+      !isCheckingProPlan &&
+      subscription === "free",
   );
   const showVisibleUpgradeCta = showEmptyStateHeader && showUpgradeCta;
 

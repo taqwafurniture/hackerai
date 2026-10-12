@@ -9,6 +9,7 @@ import {
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import type { ChatMode, SelectedModel } from "@/types/chat";
 import { openrouterAttributionHeaders } from "@/lib/ai/openrouter-attribution";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
@@ -1272,13 +1273,19 @@ const buildProviderMap = (
     "model-deepseek-v4-flash-vision": or(DEEPSEEK_V4_FLASH_VISION_SLUG),
     "model-deepseek-v4-flash-vision-pro": or(DEEPSEEK_V4_FLASH_VISION_SLUG),
     "model-kimi-k3": or(KIMI_K3_SLUG),
-    "fallback-agent-model": or(GROK_4_6_SLUG),
-    "fallback-ask-model": or(GROK_4_6_SLUG),
-    // GLM supports the title schema and requires reasoning to stay enabled.
-    "title-generator-model": or(GLM_5_3_FLASH_SLUG),
-    // Image understanding for text-only routes. The resulting description is
-    // injected as untrusted text; this model never becomes the active agent.
-    "auxiliary-vision-model": or(AUXILIARY_VISION_SLUG),
+    "fallback-agent-model": or(
+      isPublicFreeMode() ? OPENROUTER_FREE_SLUG : GROK_4_6_SLUG,
+    ),
+    "fallback-ask-model": or(
+      isPublicFreeMode() ? OPENROUTER_FREE_SLUG : GROK_4_6_SLUG,
+    ),
+    // Public-free deployments keep background model work on the free router.
+    "title-generator-model": or(
+      isPublicFreeMode() ? OPENROUTER_FREE_SLUG : GLM_5_3_FLASH_SLUG,
+    ),
+    "auxiliary-vision-model": or(
+      isPublicFreeMode() ? OPENROUTER_FREE_SLUG : AUXILIARY_VISION_SLUG,
+    ),
   }) as Record<string, any>;
 
 const baseProviders: ReturnType<typeof buildProviderMap> = {

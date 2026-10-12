@@ -1,4 +1,5 @@
 import { getPostHogFlagWithoutExposure } from "@/lib/posthog/flag-assignment";
+import { isPublicFreeMode } from "@/lib/config/public-free-mode";
 import type { NextRequest } from "next/server";
 import type { PostHog } from "posthog-node";
 import PostHogClient from "@/app/posthog";
@@ -66,6 +67,8 @@ export async function enforceRegionalSubscriptionFirst(args: {
   country?: string;
   surface: "ask" | "agent" | "agent_worker";
 }) {
+  if (isPublicFreeMode()) return;
+
   const assignment = await evaluateRegionalSubscriptionFirst(args);
   if (!assignment) return;
   let timeout: ReturnType<typeof setTimeout> | undefined;
