@@ -187,14 +187,14 @@ importers:
         specifier: ^2.7.3
         version: 2.7.3
       '@trigger.dev/build':
-        specifier: 4.6.3
-        version: 4.6.3(magicast@0.3.5)(typescript@6.0.3)(zod@4.6.5)
+        specifier: 4.7.3
+        version: 4.7.3(magicast@0.3.5)(typescript@6.0.3)(zod@4.6.5)
       '@trigger.dev/react-hooks':
-        specifier: 4.6.3
-        version: 4.6.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
+        specifier: 4.7.3
+        version: 4.7.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)
       '@trigger.dev/sdk':
-        specifier: 4.6.3
-        version: 4.6.3(ai@6.0.295(zod@4.6.5))(react@19.3.0)(zod@4.6.5)
+        specifier: 4.7.3
+        version: 4.7.3(ai@6.0.295(zod@4.6.5))(react@19.3.0)(zod@4.6.5)
       '@upstash/ratelimit':
         specifier: ^2.2.0
         version: 2.2.0(@upstash/redis@1.39.0)
@@ -3901,14 +3901,32 @@ packages:
       typescript:
         optional: true
 
+  '@trigger.dev/build@4.7.3':
+    resolution: {integrity: sha512-HseT4sGAWt4D0tEW17dntJH+YS7RP8l3ZY0KHRuJbkdWl0nNZHHYgcOSf/7jXxvSAPknPWIpBNeMi+6D8NUJGw==}
+    engines: {node: '>=18.20.0'}
+    peerDependencies:
+      '@typescript/typescript6': ^6.0.0
+      typescript: '>=5.0.0'
+    peerDependenciesMeta:
+      '@typescript/typescript6':
+        optional: true
+      typescript:
+        optional: true
+
   '@trigger.dev/core@4.6.3':
     resolution: {integrity: sha512-HePjNzXVQ2NA9XPLnSCUV5cRcMwNnecvpwbNpWljQZYm9iBnT5ztKx4CfOHGGE6weOuLlgsvGRtttg76dPHXSg==}
     engines: {node: '>=18.20.0'}
     peerDependencies:
       zod: ^3.25.56 || ^4.0.0
 
-  '@trigger.dev/react-hooks@4.6.3':
-    resolution: {integrity: sha512-vFY+WYDSM/z9jsfA+q0rS8YCHtvORvljmgoeBa7QDlUtmHaZlTMgEFnmORXJbFj1cP+vemufhHac+sRuUNXMnQ==}
+  '@trigger.dev/core@4.7.3':
+    resolution: {integrity: sha512-WCURVW4TsCtm40zdF1gKQvEYOia+zIoWzjk3vxdHsFZpQ0kAyXT+8UtSvCbW+WRKK8M7KGcHVDJ4pqiI662+tw==}
+    engines: {node: '>=18.20.0'}
+    peerDependencies:
+      zod: ^3.25.56 || ^4.0.0
+
+  '@trigger.dev/react-hooks@4.7.3':
+    resolution: {integrity: sha512-uSnQQudjymEB2RpS6KEeHuK9iM70uDCoi9+QhBO0PgqgG426u6sfIJYkiYOkl+wIBMU0c+ctvW9vuZyBRT8dIg==}
     engines: {node: '>=18.20.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -3936,8 +3954,8 @@ packages:
       valibot:
         optional: true
 
-  '@trigger.dev/sdk@4.6.3':
-    resolution: {integrity: sha512-+h7zkG3amrj3tBPldxwWvUnUGYTBB7SKVO0hDRmFOd3VWe0rnGkEeOmtH//cSilhqFLz1qXtwXPY+iUYiML5hw==}
+  '@trigger.dev/sdk@4.7.3':
+    resolution: {integrity: sha512-ixP8PNlqaBWzVh4oDDJJm7NkcxT/WwJ4a/9u+4AZerrY2iQdxOQ2QaVk6uen/lYrh//+zmSx5SaLixf0z0aLRw==}
     engines: {node: '>=18.20.0'}
     peerDependencies:
       '@ai-sdk/otel': '>=1.0.0-0 <2'
@@ -7366,6 +7384,7 @@ packages:
   prom-client@15.1.3:
     resolution: {integrity: sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==}
     engines: {node: ^16 || ^18 || >=20}
+    deprecated: prom-client has been replaced by @prometheus-io/client
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
@@ -8165,6 +8184,7 @@ packages:
   tsconfck@3.1.3:
     resolution: {integrity: sha512-ulNZP1SVpRDesxeMLON/LtWM8HIgAJEIVpVVhBM6gsmvQ8+Rh+ZG7FWGvHh7Ah3pRABwVJWklWCr/BTZSv0xnQ==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -11718,10 +11738,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@trigger.dev/build@4.6.3(magicast@0.3.5)(typescript@6.0.3)(zod@4.6.5)':
+  '@trigger.dev/build@4.7.3(magicast@0.3.5)(typescript@6.0.3)(zod@4.6.5)':
     dependencies:
       '@prisma/config': 6.19.3(magicast@0.3.5)
-      '@trigger.dev/core': 4.6.3(zod@4.6.5)
+      '@trigger.dev/core': 4.7.3(zod@4.6.5)
       mlly: 1.8.0
       pkg-types: 1.3.1
       tinyglobby: 0.2.15
@@ -11773,7 +11793,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/core@4.6.3(zod@4.6.5)':
+  '@trigger.dev/core@4.7.3(zod@4.6.5)':
     dependencies:
       '@bugsnag/cuid': 3.2.2
       '@electric-sql/client': 1.0.14
@@ -11811,9 +11831,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/react-hooks@4.6.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)':
+  '@trigger.dev/react-hooks@4.7.3(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.5)':
     dependencies:
-      '@trigger.dev/core': 4.6.3(zod@4.6.5)
+      '@trigger.dev/core': 4.7.3(zod@4.6.5)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
       swr: 2.5.1(react@19.3.0)
@@ -11838,11 +11858,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/sdk@4.6.3(ai@6.0.295(zod@4.6.5))(react@19.3.0)(zod@4.6.5)':
+  '@trigger.dev/sdk@4.7.3(ai@6.0.295(zod@4.6.5))(react@19.3.0)(zod@4.6.5)':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.41.1
-      '@trigger.dev/core': 4.6.3(zod@4.6.5)
+      '@trigger.dev/core': 4.7.3(zod@4.6.5)
       uncrypto: 0.1.3
       zod: 4.6.5
     optionalDependencies:
@@ -14126,7 +14146,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.3
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.18.0(debug@4.4.3))
+      retry-axios: 2.6.0(axios@1.18.0)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -16466,7 +16486,7 @@ snapshots:
 
   resumable-stream@2.2.13: {}
 
-  retry-axios@2.6.0(axios@1.18.0(debug@4.4.3)):
+  retry-axios@2.6.0(axios@1.18.0):
     dependencies:
       axios: 1.18.0(debug@4.4.3)
 

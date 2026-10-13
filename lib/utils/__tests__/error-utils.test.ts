@@ -730,3 +730,22 @@ describe("SSE upstream abort recovery", () => {
     ).not.toHaveProperty("providerErrorParam");
   });
 });
+
+
+describe("OpenRouter HTTP 429 rate limit", () => {
+  it("classifies rate limits and returns a friendly message without disconnect retry", () => {
+    const err = apiCallError({
+      statusCode: 429,
+      message: "Too Many Requests",
+    });
+
+    expect(getProviderStatusCode(extractErrorDetails(err))).toBe(429);
+    expect(getProviderErrorCategory(extractErrorDetails(err))).toBe(
+      "rate_limited",
+    );
+    expect(getUserFriendlyProviderError(err)).toContain(
+      "temporarily rate limited",
+    );
+    expect(isRetriableProviderStreamDisconnectError(err)).toBe(false);
+  });
+});
